@@ -2,31 +2,23 @@ var ChatClient = angular.module("ChatClient", ['ngRoute']);
 
 ChatClient.config(function ($routeProvider){
 	$routeProvider
-	.when("/home/index", {
-		templateUrl: "views/home.html",
-		controller: "HomeController"
-	})
-	.when("/home/login", {
+	.when("/login", {
 		templateUrl: "views/login.html",
 		controller: "LoginController"
 	})
-	.when("/home/room", {
+	.when("/room", {
 		templateUrl: "views/room.html",
 		controller: "RoomController"
 	})
-	.when("/home/rooms", {
+	.when("/rooms", {
 		templateUrl: "views/rooms.html",
 		controller: "RoomsController"
 	})
 	.otherwise({
-		redirectTo: "home/index"
+		redirectTo: "/login"
 	});
 });
 
-ChatClient.controller("HomeController", 
-function ($scope){
-	$scope.message = "Hello from home";
-});
 
 ChatClient.controller("LoginController", 
 function ($scope){
