@@ -1,5 +1,7 @@
 ChatClient.controller("LoginController",
 function ($scope, socket){
+	$scope.errorMessage = "";
+	$scope.nickname = "";
     socket.on("roomlist", function(data) {
         console.log(data);
     });
@@ -7,7 +9,7 @@ function ($scope, socket){
     socket.emit("rooms");
 
     $scope.login = function(){
-    	console.log("log in ");
+
     }
 });
 
