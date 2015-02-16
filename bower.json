@@ -1,5 +1,5 @@
 {
-  "name": "chat-server",
+  "name": "chat-app",
   "version": "1.0.0",
   "authors": [
     "Arnar Gauti Ingason",
@@ -18,6 +18,6 @@
   "dependencies": {
     "angular": "~1.3.13",
     "angular-route": "~1.3.13",
-    "socket.io-client": "~1.3.4"
+    "socket.io-client": "0.9.x"
   }
 }
