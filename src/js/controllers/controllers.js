@@ -21,8 +21,30 @@ function ($scope, $location, socket){
 });
 
 ChatClient.controller("RoomController",
-function ($scope){
+function ($scope, $routeParams, socket){
     $scope.message = "Hello from Room";
+    $scope.currentRoom = $routeParams.room;
+    $scope.currentUser = $routeParams.user;
+    $scope.currentUsers = [];
+    $scope.errorMessage = "";
+    $scope.messageHistory = [];
+
+    socket.on("updatechat", function(roomName, messageHistory){
+    	$scope.messageHistory = messageHistory;
+    });
+
+    socket.on("updateusers", function(roomName, users, ops){
+    	// TODO: Check if the roomName equals the current room !
+		$scope.currentUsers = users;
+    });
+
+    socket.emit("joinroom", {room: $scope.currentRoom}, function(success, why){
+    	if(success){
+    		console.log("success");
+    	} else {
+    		console.log(":((");
+    	}
+    });
 });
 
 ChatClient.controller("RoomsController",
@@ -33,7 +55,7 @@ function ($scope, $routeParams, socket){
 
     socket.on("roomlist", function(data) {
     	$scope.message = data.lobby.topic;
-    	console.log(Object.keys(data));
+    	console.log(data);
     	$scope.rooms = Object.keys(data);
     });
 	
