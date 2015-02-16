@@ -1,15 +1,22 @@
 ChatClient.controller("LoginController",
-function ($scope, socket){
+function ($scope, $location, socket){
+
 	$scope.errorMessage = "";
 	$scope.nickname = "";
-    socket.on("roomlist", function(data) {
-        console.log(data);
-    });
     $scope.message = "Hello from Login";
-    socket.emit("rooms");
 
     $scope.login = function(){
-
+    	if($scope.nickname === ""){
+    		$scope.errorMessage = "Please choose a nickname";
+    	} else {
+    		socket.emit("adduser", $scope.nickname, function(available){
+    			if(available){
+    				$location.path("/rooms/" + $scope.nickname);
+    			} else{
+    				$scope.errorMessage = "This nickname is already taken";
+    			}
+    		});
+    	}
     }
 });
 
@@ -19,6 +26,17 @@ function ($scope){
 });
 
 ChatClient.controller("RoomsController",
-function ($scope){
-    $scope.message = "Hello from Rooms";
+function ($scope, $routeParams, socket){
+    
+    $scope.rooms = [];
+    $scope.currentUser = $routeParams.user;
+
+    socket.on("roomlist", function(data) {
+    	$scope.message = data.lobby.topic;
+    	console.log(Object.keys(data));
+    	$scope.rooms = Object.keys(data);
+    });
+	
+
+    socket.emit("rooms");
 });

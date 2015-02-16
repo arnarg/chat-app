@@ -6,11 +6,11 @@ ChatClient.config(function ($routeProvider){
 		templateUrl: "views/login.html",
 		controller: "LoginController"
 	})
-	.when("/room", {
+	.when("/room/:user/:room/", {
 		templateUrl: "views/room.html",
 		controller: "RoomController"
 	})
-	.when("/rooms", {
+	.when("/rooms/:user/", {
 		templateUrl: "views/rooms.html",
 		controller: "RoomsController"
 	})
