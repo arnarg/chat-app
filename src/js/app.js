@@ -18,19 +18,3 @@ ChatClient.config(function ($routeProvider){
 		redirectTo: "/login"
 	});
 });
-
-
-ChatClient.controller("LoginController", 
-function ($scope){
-	$scope.message = "Hello from Login";
-});
-
-ChatClient.controller("RoomController", 
-function ($scope){
-	$scope.message = "Hello from Room";
-});
-
-ChatClient.controller("RoomsController", 
-function ($scope){
-	$scope.message = "Hello from Rooms";
-});
