@@ -5,6 +5,10 @@ function ($scope, socket){
     });
     $scope.message = "Hello from Login";
     socket.emit("rooms");
+
+    $scope.login = function(){
+    	console.log("log in ");
+    }
 });
 
 ChatClient.controller("RoomController",
