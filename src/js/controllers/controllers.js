@@ -21,10 +21,10 @@ function ($scope, $location, socket){
 
 ChatClient.controller("NavbarController",
 function ($scope, $location, socket){
-    $scope.rooms = function(){
-        console.log("navbarcontroller");
-        $location.path("/rooms/:user");
-    }
+	$scope.rooms = function(){
+		console.log("navbarcontroller");
+		$location.path("/rooms/:user");
+	}
 })
 
 ChatClient.controller("RoomController",
@@ -71,6 +71,17 @@ function ($scope, $location, $routeParams, $window, socket){
 	$scope.backToRooms = function(){
 		$location.path("/rooms/" + $scope.currentUser);
 	}
+
+	$scope.kickUser = function(userToKick){
+		console.log(userToKick);
+		socket.emit("kick", {user: userToKick, room: $scope.currentRoom}, function(success){
+			if(success){
+				console.log("kicked successfully");
+			} else {
+				console.log("kick failed");
+			}
+		});
+	}
 });
 
 ChatClient.controller("PrivateController",
@@ -80,8 +91,9 @@ function ($scope, $routeParams, $location, socket){
 	//$scope.currentUser = $routeParams.currentUser; ??
 
 	$scope.sendPrivateMessage = function(){
-		console.log("kemst eg hingad??");
-		socket.emit("privatemsg", {nick: $scope.userToSendTo, message: $scope.newMessage}, function(success){
+		console.log($scope.userToSendTo);
+		console.log($scope.newMessage);
+		socket.emit("privatemsg", {nick: $scope.userToSendTo, msg: $scope.newMessage}, function(success){
 			if(success) {
 				console.log("virkadi");
 				$scope.newMessage = "";
@@ -91,6 +103,11 @@ function ($scope, $routeParams, $location, socket){
 			}
 		});
 	};
+	socket.on("recv_privatemsg", function(nick, msg){
+		$scope.newMessage = msg;
+		//console.log($scope.newMessage);
+		console.log(nick + " " + msg);
+	});
 });
 
 ChatClient.controller("RoomsController",
@@ -117,7 +134,6 @@ function ($scope, $location, $routeParams, socket){
 					console.log("success");
 					$location.path("/room/" + $scope.currentUser + "/" + $scope.roomName);
 					$scope.roomName = "";
-
 				} else {
 					console.log(reason);
 				}
