@@ -92,6 +92,7 @@ function ($scope, $location, $routeParams, $window, socket){
 	};
 
 	$scope.backToRooms = function(){
+		socket.emit("partroom", $scope.currentRoom);
 		$location.path("/rooms/" + $scope.currentUser);
 	};
 
