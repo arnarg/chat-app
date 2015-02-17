@@ -29,16 +29,26 @@ function ($scope, $location, socket){
 
 ChatClient.controller("RoomController",
 function ($scope, $location, $routeParams, $window, socket){
-	$scope.message = "Hello from Room";
 	$scope.currentRoom = $routeParams.room;
 	$scope.currentUser = $routeParams.user;
 	$scope.currentUsers = [];
 	$scope.errorMessage = "";
 	$scope.messageHistory = [];
 	$scope.newMessage = "";
+	$scope.roomTopic = "";
 
 	socket.on("updatechat", function(roomName, messageHistory){
 		$scope.messageHistory = messageHistory;
+		$scope.roomTopic = "Welcome to the room! Please behave :((";
+	});
+
+	socket.on("servermessage", function(join, room, user){
+		if(join){
+			servermsg = user + " just joined in on the fun!";
+			if($scope.currentUser === user){
+				socket.emit("sendmsg", {roomName: room, msg: servermsg});
+			}
+		}
 	});
 
 	socket.on("updateusers", function(roomName, users, ops){
@@ -54,6 +64,19 @@ function ($scope, $location, $routeParams, $window, socket){
 		}
 	});
 
+	socket.on("kicked", function(room, kickee, kicker){
+		if(kickee === $scope.currentUser){
+			$location.path("/rooms/" + $scope.currentUser);
+		}
+	});
+
+	socket.on("banned", function(room, bannee, banner){
+		if(bannee === $scope.currentUser){
+			$location.path("/rooms/" + $scope.currentUser);
+			$scope.errorMessage = "You just got banned from the room";
+		}
+	});
+
 	$scope.sendMessage = function(){
 		console.log($scope.currentUser);
 		if($scope.newMessage === "") {
@@ -66,22 +89,36 @@ function ($scope, $location, $routeParams, $window, socket){
 
 	$scope.back = function() {
 		$window.history.back();
-	}
+	};
 
 	$scope.backToRooms = function(){
 		$location.path("/rooms/" + $scope.currentUser);
-	}
+	};
 
 	$scope.kickUser = function(userToKick){
 		console.log(userToKick);
 		socket.emit("kick", {user: userToKick, room: $scope.currentRoom}, function(success){
 			if(success){
-				console.log("kicked successfully");
+				kickMsg = userToKick + " just got kicked!";
+				socket.emit("sendmsg", {roomName: $scope.currentRoom, msg: kickMsg});
 			} else {
 				console.log("kick failed");
 			}
 		});
+	};
+
+	$scope.banUser = function(userToBan){
+		socket.emit("ban", {user: userToBan, room: $scope.currentRoom}, function(success){
+			if(success){
+				banMsg = userToBan + " just got banned!!";
+				socket.emit("sendmsg", {roomName: $scope.currentRoom, msg: banMsg});
+			} else {
+				console.log("ban failed");
+			}
+		});
 	}
+
+
 });
 
 ChatClient.controller("PrivateController",

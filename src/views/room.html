@@ -6,7 +6,6 @@
 <div class="col-md-9">
 	<div class="well">
 		<ul>
-			<li> First message </li>
 			<li ng-repeat="message in messageHistory">[{{message.timestamp | date:'H:mm'}}] {{message.nick}}: {{message.message}} </li>
 		</ul>
 		<input type = "text" class="form-control" id="newMessage" name="newMessage" data-ng-model="newMessage" />
@@ -19,7 +18,7 @@
 	<h4>Users in this room</h4>
 	<div class="well">
 		<ul>
-			<li ng-repeat="user in currentUsers"><a href="#/privateRoom/{{user}}">{{user}}</a> <a data-ng-click="kickUser(user)">Kick</a></li>
+			<li ng-repeat="user in currentUsers"><a href="#/privateRoom/{{user}}">{{user}}</a> <a data-ng-click="kickUser(user)">Kick</a> <a data-ng-click="banUser(user)">Ban</a></li>
 		</ul>
 	</div>
 </div>
