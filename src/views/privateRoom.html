@@ -1,0 +1,15 @@
+<div class="alert alert-danger" ng-cloak ng-show="errorMessage != ''">
+	{{errorMessage}}
+</div>
+
+<h3>Hi {{currentUser}} - You are sending message to {{user}}</h3>
+<div class="col-md-9">
+	<div class="well">
+		<ul>
+			<li ng-repeat="message in messageHistory">[{{message.timestamp | date:'H:mm'}}] {{message.nick}}: {{message.message}} </li>
+		</ul>
+		<input type = "text" class="form-control" id="newMessage" name="newMessage" data-ng-model="newMessage" />
+		<button type="button" class="btn btn-primary" data-ng-click="sendPrivateMessage()">Send</button>
+		<button type="button" class="btn btn-primary" data-ng-click="back()">Back to chat</button>
+	</div>
+</div>
