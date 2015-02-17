@@ -24,13 +24,12 @@ ChatClient.controller("NavbarController",
 function ($scope, $location, socket){
     $scope.rooms = function(){
         console.log("navbarcontroller");
-        var path = ":user";
-        $location.path("/rooms/" + path);
+        $location.path("/rooms/:user");
     }
 })
 
 ChatClient.controller("RoomController",
-function ($scope, $routeParams, socket){
+function ($scope, $location, $routeParams, socket){
 	$scope.message = "Hello from Room";
 	$scope.currentRoom = $routeParams.room;
 	$scope.currentUser = $routeParams.user;
@@ -63,6 +62,10 @@ function ($scope, $routeParams, socket){
 			socket.emit("sendmsg", {roomName: $scope.currentRoom, msg: $scope.newMessage});
             $scope.newMessage = "";
 		}
+	}
+
+	$scope.backToRooms = function(){
+		$location.path("/rooms/" + $scope.currentUser);
 	}
 });
 
