@@ -51,6 +51,7 @@ function ($scope, $routeParams, socket){
 			$scope.errorMessage ="Please write a message";
 		} else {
 			socket.emit("sendmsg", {roomName: $scope.currentRoom, msg: $scope.newMessage});
+            $scope.newMessage = "";
 		}
 	}
 });

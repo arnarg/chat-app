@@ -7,7 +7,7 @@
 	<div class="well">
 		<ul>
 			<li> First message </li>
-			<li ng-repeat="message in messageHistory">{{message}}</li>
+			<li ng-repeat="message in messageHistory">[{{message.timestamp | date:'H:mm'}}] {{message.nick}}: {{message.message}} </li>
 		</ul>
 		<input type = "text" class="form-control" id="newMessage" name="newMessage" data-ng-model="newMessage" />
 		<button type="button" class="btn btn-primary" data-ng-click="sendMessage()">Send</button>
