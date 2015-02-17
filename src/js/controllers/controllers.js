@@ -70,6 +70,13 @@ function ($scope, $location, $routeParams, $window, socket){
 		}
 	});
 
+	socket.on("banned", function(room, bannee, banner){
+		if(bannee === $scope.currentUser){
+			$location.path("/rooms/" + $scope.currentUser);
+			$scope.errorMessage = "You just got banned from the room";
+		}
+	});
+
 	$scope.sendMessage = function(){
 		console.log($scope.currentUser);
 		if($scope.newMessage === "") {
@@ -99,6 +106,19 @@ function ($scope, $location, $routeParams, $window, socket){
 			}
 		});
 	};
+
+	$scope.banUser = function(userToBan){
+		socket.emit("ban", {user: userToBan, room: $scope.currentRoom}, function(success){
+			if(success){
+				banMsg = userToBan + " just got banned!!";
+				socket.emit("sendmsg", {roomName: $scope.currentRoom, msg: banMsg});
+			} else {
+				console.log("ban failed");
+			}
+		});
+	}
+
+
 });
 
 ChatClient.controller("PrivateController",
