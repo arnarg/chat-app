@@ -19,6 +19,16 @@ function ($scope, $location, socket){
 	}
 });
 
+
+ChatClient.controller("NavbarController",
+function ($scope, $location, socket){
+    $scope.rooms = function(){
+        console.log("navbarcontroller");
+        var path = ":user";
+        $location.path("/rooms/" + path);
+    }
+})
+
 ChatClient.controller("RoomController",
 function ($scope, $routeParams, socket){
 	$scope.message = "Hello from Room";
@@ -57,8 +67,9 @@ function ($scope, $routeParams, socket){
 });
 
 ChatClient.controller("RoomsController",
-function ($scope, $routeParams, socket){
+function ($scope, $location, $routeParams, socket){
 	$scope.rooms = [];
+	$scope.roomName = "";
 	$scope.currentUser = $routeParams.user;
 
 	socket.on("roomlist", function(data) {
@@ -68,4 +79,23 @@ function ($scope, $routeParams, socket){
 	});
 
 	socket.emit("rooms");
+
+	$scope.createRoom = function(){
+		if($scope.roomName === "") {
+			$scope.errorMessage ="Please write a message";
+			console.log("no room name");
+		} else {
+			socket.emit("joinroom", {room: $scope.roomName}, function(success, reason){
+				if(success){
+					console.log("success");
+					$location.path("/room/" + $scope.currentUser + "/" + $scope.roomName);
+					$scope.roomName = "";
+
+				} else {
+					console.log(reason);
+				}
+			});
+            
+		}
+	}
 });
