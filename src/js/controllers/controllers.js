@@ -21,10 +21,10 @@ function ($scope, $location, socket){
 
 ChatClient.controller("NavbarController",
 function ($scope, $location, socket){
-    $scope.rooms = function(){
-        console.log("navbarcontroller");
-        $location.path("/rooms/:user");
-    }
+	$scope.rooms = function(){
+		console.log("navbarcontroller");
+		$location.path("/rooms/:user");
+	}
 })
 
 ChatClient.controller("RoomController",
@@ -69,7 +69,7 @@ function ($scope, $location, $routeParams, $window, socket){
 			$location.path("/rooms/" + $scope.currentUser);
 		}
 	});
-	
+
 	$scope.sendMessage = function(){
 		console.log($scope.currentUser);
 		if($scope.newMessage === "") {
@@ -104,23 +104,28 @@ function ($scope, $location, $routeParams, $window, socket){
 ChatClient.controller("PrivateController",
 function ($scope, $routeParams, $location, socket){
 	$scope.userToSendTo = $routeParams.user;
-	$scope.currentUser = $routeParams.currentUser;
-	//$scope.roomName = ??
-	$scope.privateMessage = function(){
-		console.log("kemst eg hingad??");
-		$location.path("/privateRoom/" + $scope.userToSendTo);
+	$scope.newMessage = "";
+	//$scope.currentUser = $routeParams.currentUser; ??
 
-		socket.emit("privatemsg", {nick: userToSendTo, message: msg}, function(success){
+	$scope.sendPrivateMessage = function(){
+		console.log($scope.userToSendTo);
+		console.log($scope.newMessage);
+		socket.emit("privatemsg", {nick: $scope.userToSendTo, msg: $scope.newMessage}, function(success){
 			if(success) {
 				console.log("virkadi");
+				$scope.newMessage = "";
 			}
 			else {
 				console.log("virkadi ekki");
 			}
-		})
+		});
 	};
+	socket.on("recv_privatemsg", function(nick, msg){
+		$scope.newMessage = msg;
+		//console.log($scope.newMessage);
+		console.log(nick + " " + msg);
+	});
 });
-
 
 ChatClient.controller("RoomsController",
 function ($scope, $location, $routeParams, socket){
@@ -146,7 +151,6 @@ function ($scope, $location, $routeParams, socket){
 					console.log("success");
 					$location.path("/room/" + $scope.currentUser + "/" + $scope.roomName);
 					$scope.roomName = "";
-
 				} else {
 					console.log(reason);
 				}
