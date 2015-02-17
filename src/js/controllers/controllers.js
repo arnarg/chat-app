@@ -88,12 +88,10 @@ ChatClient.controller("PrivateController",
 function ($scope, $routeParams, $location, socket){
 	$scope.userToSendTo = $routeParams.user;
 	$scope.newMessage = "";
-	//$scope.currentUser = $routeParams.currentUser; ??
 
 	$scope.sendPrivateMessage = function(){
 		console.log($scope.userToSendTo);
-		console.log($scope.newMessage);
-		socket.emit("privatemsg", {nick: $scope.userToSendTo, msg: $scope.newMessage}, function(success){
+		socket.emit("privatemsg", {nick: $scope.userToSendTo, message: $scope.newMessage}, function(success){
 			if(success) {
 				console.log("virkadi");
 				$scope.newMessage = "";
@@ -103,10 +101,8 @@ function ($scope, $routeParams, $location, socket){
 			}
 		});
 	};
-	socket.on("recv_privatemsg", function(nick, msg){
-		$scope.newMessage = msg;
-		//console.log($scope.newMessage);
-		console.log(nick + " " + msg);
+	socket.on("recv_privatemsg", function(nick, message){
+		$scope.newMessage = message;
 	});
 });
 
