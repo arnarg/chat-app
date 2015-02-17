@@ -73,13 +73,23 @@ function ($scope, $routeParams, $window, socket){
 ChatClient.controller("PrivateController",
 function ($scope, $routeParams, $location, socket){
 	$scope.userToSendTo = $routeParams.user;
-	$scope.
+	$scope.currentUser = $routeParams.currentUser;
 	//$scope.roomName = ??
 	$scope.privateMessage = function(){
-		console.log("kemst ég hingað?");
+		console.log("kemst eg hingad??");
 		$location.path("/privateRoom/" + $scope.userToSendTo);
+
+		socket.emit("privatemsg", {nick: userToSendTo, message: msg}, function(success){
+			if(success) {
+				console.log("virkadi");
+			}
+			else {
+				console.log("virkadi ekki");
+			}
+		})
 	};
-})
+});
+
 
 ChatClient.controller("RoomsController",
 function ($scope, $location, $routeParams, socket){
