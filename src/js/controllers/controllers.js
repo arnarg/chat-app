@@ -71,6 +71,17 @@ function ($scope, $location, $routeParams, $window, socket){
 	$scope.backToRooms = function(){
 		$location.path("/rooms/" + $scope.currentUser);
 	}
+
+	$scope.kickUser = function(userToKick){
+		console.log(userToKick);
+		socket.emit("kick", {user: userToKick, room: $scope.currentRoom}, function(success){
+			if(success){
+				console.log("kicked successfully");
+			} else {
+				console.log("kick failed");
+			}
+		});
+	}
 });
 
 ChatClient.controller("PrivateController",
