@@ -14,6 +14,10 @@ ChatClient.config(function ($routeProvider){
 		templateUrl: "views/rooms.html",
 		controller: "RoomsController"
 	})
+	.when("/privateRoom/:user/", {
+		templateUrl: "views/privateRoom.html",
+		controller: "PrivateController"
+	})
 	.otherwise({
 		redirectTo: "/login"
 	});

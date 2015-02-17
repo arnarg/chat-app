@@ -20,7 +20,7 @@ function ($scope, $location, socket){
 });
 
 ChatClient.controller("RoomController",
-function ($scope, $routeParams, socket){
+function ($scope, $routeParams, $window, socket){
 	$scope.message = "Hello from Room";
 	$scope.currentRoom = $routeParams.room;
 	$scope.currentUser = $routeParams.user;
@@ -45,16 +45,32 @@ function ($scope, $routeParams, socket){
 			console.log(":((");
 		}
 	});
+	
 	$scope.sendMessage = function(){
 		console.log($scope.currentUser);
 		if($scope.newMessage === "") {
 			$scope.errorMessage ="Please write a message";
 		} else {
 			socket.emit("sendmsg", {roomName: $scope.currentRoom, msg: $scope.newMessage});
-            $scope.newMessage = "";
+			$scope.newMessage = "";
 		}
+	};
+
+	$scope.back = function() {
+		$window.history.back();
 	}
 });
+
+ChatClient.controller("PrivateController",
+function ($scope, $routeParams, $location, socket){
+	$scope.userToSendTo = $routeParams.user;
+	$scope.
+	//$scope.roomName = ??
+	$scope.privateMessage = function(){
+		console.log("kemst ég hingað?");
+		$location.path("/privateRoom/" + $scope.userToSendTo);
+	};
+})
 
 ChatClient.controller("RoomsController",
 function ($scope, $routeParams, socket){

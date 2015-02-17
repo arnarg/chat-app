@@ -11,13 +11,14 @@
 		</ul>
 		<input type = "text" class="form-control" id="newMessage" name="newMessage" data-ng-model="newMessage" />
 		<button type="button" class="btn btn-primary" data-ng-click="sendMessage()">Send</button>
+		<button type="button" class="btn btn-primary" data-ng-click="back()">Back</button>
 	</div>
 </div>
 <div class="col-md-3">
 	<h4>Users in this room</h4>
 	<div class="well">
 		<ul>
-			<li ng-repeat="user in currentUsers">{{user}}</li>
+			<li ng-repeat="user in currentUsers" data-ng-click="privateMessage()">{{user}}</li>
 		</ul>
 	</div>
 </div>
