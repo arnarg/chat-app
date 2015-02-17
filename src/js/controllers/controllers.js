@@ -53,7 +53,7 @@ function ($scope, $location, $routeParams, $window, socket){
 			console.log(":((");
 		}
 	});
-	
+
 	$scope.sendMessage = function(){
 		console.log($scope.currentUser);
 		if($scope.newMessage === "") {
@@ -76,23 +76,22 @@ function ($scope, $location, $routeParams, $window, socket){
 ChatClient.controller("PrivateController",
 function ($scope, $routeParams, $location, socket){
 	$scope.userToSendTo = $routeParams.user;
-	$scope.currentUser = $routeParams.currentUser;
-	//$scope.roomName = ??
-	$scope.privateMessage = function(){
-		console.log("kemst eg hingad??");
-		$location.path("/privateRoom/" + $scope.userToSendTo);
+	$scope.newMessage = "";
+	//$scope.currentUser = $routeParams.currentUser; ??
 
-		socket.emit("privatemsg", {nick: userToSendTo, message: msg}, function(success){
+	$scope.sendPrivateMessage = function(){
+		console.log("kemst eg hingad??");
+		socket.emit("privatemsg", {nick: $scope.userToSendTo, message: $scope.newMessage}, function(success){
 			if(success) {
 				console.log("virkadi");
+				$scope.newMessage = "";
 			}
 			else {
 				console.log("virkadi ekki");
 			}
-		})
+		});
 	};
 });
-
 
 ChatClient.controller("RoomsController",
 function ($scope, $location, $routeParams, socket){
