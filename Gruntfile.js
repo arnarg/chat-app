@@ -2,10 +2,30 @@ module.exports = function (grunt) {
 	var taskConfig = {
 		pkg: grunt.file.readJSON('package.json'),
 		jshint: {
-			src: ['src/js/**/*.js'],
-			gruntfile: ['Gruntfile.js'],
 			options: {
-			}
+				curly:  true,
+				immed:  true,
+				newcap: true,
+				noarg:  true,
+				sub:    true,
+				boss:   true,
+				eqnull: true,
+				node:   true,
+				undef:  true,
+				browser: true,	// to allow document
+				devel: true, 	// to allow alert
+				globals: {
+					_:       false,
+					jQuery:  false,
+					angular: false,
+					moment:  false,
+					console: false,
+					$:       false,
+					io:      false
+				}
+			},
+			src: ['src/dest/app.js'],
+			gruntfile: ['Gruntfile.js']
 		},
 		concat: {
 			options: {
@@ -27,8 +47,8 @@ module.exports = function (grunt) {
 			}
 		}
 	};
-	
-	grunt.registerTask('default', ['jshint', 'concat', 'uglify']);
+
+	grunt.registerTask('default', ['concat', 'jshint', 'uglify']);
 
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-concat');
