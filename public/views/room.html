@@ -23,11 +23,7 @@
 	<h4>Users in this room</h4>
 	<div class="well">
 		<ul>
-<<<<<<< HEAD
-			<li ng-repeat="user in currentUsers"><a href="#/room/{{user}}/{{currentUser}}">{{user}}</a> <a data-ng-click="kickUser(user)">Kick</a> <a data-ng-click="banUser(user)">Ban</a></li>
-=======
 			<li ng-repeat="user in currentUsers"><a href="#/privateRoom/{{user}}">{{user}}</a> <a data-ng-click="kickUser(user)" data-ng-hide="isUserOrOp(user)">Kick</a> <a data-ng-click="banUser(user)" data-ng-hide="isUserOrOp(user)">Ban</a></li>
->>>>>>> 2130fee56e145b6c3ebef2aaf855b06920302926
 		</ul>
 	</div>
 </div>

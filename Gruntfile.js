@@ -1,22 +1,18 @@
 module.exports = function (grunt) {
-	grunt.loadNpmTasks('grunt-contrib-jshint');
-	grunt.loadNpmTasks('grunt-contrib-concat');
-	grunt.loadNpmTasks('grunt-contrib-uglify');
 	var taskConfig = {
-		pkg: grunt.file.readJSON('package.json'),
 		jshint: {
-			src: ['src/js/*.js'],
+			src: ['src/js/**/*.js'],
 			gruntfile: ['Gruntfile.js'],
 			options: {
 			}
 		},
 		concat: {
 			options: {
-				separator: ';'
+				separator: '\n'
 			},
 			dist: {
-				src: ['src/js/*.js'],
-				dest: 'src/js/<%= pkg.name %>.js'
+				src: ['src/js/app.js', 'src/js/**/*.js'],
+				dest: 'public/js/app.js'
 			}
 		},
 		uglify: {
@@ -30,5 +26,8 @@ module.exports = function (grunt) {
 			}
 		}
 	};
+	grunt.loadNpmTasks('grunt-contrib-jshint');
+	grunt.loadNpmTasks('grunt-contrib-concat');
+	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.initConfig(taskConfig);
 };
