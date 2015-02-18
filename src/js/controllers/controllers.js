@@ -31,29 +31,36 @@ ChatClient.controller("RoomController",
 function ($scope, $location, $routeParams, $window, socket){
 	$scope.currentRoom = $routeParams.room;
 	$scope.currentUser = $routeParams.user;
-	$scope.currentUsers = [];
+	$scope.currentUsers = {};
+	$scope.currentOps = {};
 	$scope.errorMessage = "";
 	$scope.messageHistory = [];
 	$scope.newMessage = "";
 	$scope.roomTopic = "";
+	var joinmsg = "";
+	var partmsg = "";
 
 	socket.on("updatechat", function(roomName, messageHistory){
 		$scope.messageHistory = messageHistory;
 		$scope.roomTopic = "Welcome to the room! Please behave :((";
 	});
 
-	socket.on("servermessage", function(join, room, user){
-		if(join){
-			servermsg = user + " just joined in on the fun!";
+	socket.on("servermessage", function(status, room, user){
+		if(status === "join"){
 			if($scope.currentUser === user){
-				socket.emit("sendmsg", {roomName: room, msg: servermsg});
+				if(joinmsg === ""){
+					joinmsg = " just joined in on the fun!";
+					socket.emit("sendmsg", {roomName: room, msg: joinmsg});
+				}
+				
 			}
-		}
+		} 
 	});
 
 	socket.on("updateusers", function(roomName, users, ops){
 		// TODO: Check if the roomName equals the current room !
 		$scope.currentUsers = users;
+		$scope.currentOps = ops;
 	});
 
 	socket.emit("joinroom", {room: $scope.currentRoom}, function(success, why){
@@ -73,7 +80,6 @@ function ($scope, $location, $routeParams, $window, socket){
 	socket.on("banned", function(room, bannee, banner){
 		if(bannee === $scope.currentUser){
 			$location.path("/rooms/" + $scope.currentUser);
-			$scope.errorMessage = "You just got banned from the room";
 		}
 	});
 
@@ -153,6 +159,7 @@ function ($scope, $location, $routeParams, socket){
 	$scope.rooms = [];
 	$scope.roomName = "";
 	$scope.currentUser = $routeParams.user;
+	$scope.errorMessage = "";
 
 	socket.on("roomlist", function(data) {
 		$scope.message = data.lobby.topic;
@@ -164,7 +171,7 @@ function ($scope, $location, $routeParams, socket){
 
 	$scope.createRoom = function(){
 		if($scope.roomName === "") {
-			$scope.errorMessage ="Please write a message";
+			$scope.errorMessage ="Please write a name for you room";
 			console.log("no room name");
 		} else {
 			socket.emit("joinroom", {room: $scope.roomName}, function(success, reason){
