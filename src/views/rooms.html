@@ -1,7 +1,7 @@
 <div class="alert alert-danger" ng-cloak ng-show="errorMessage !== ''">
 	{{errorMessage}}
 </div>
-<h3>Hi {{currentUser}} - Active chat rooms heh</h3>
+<h3>Hi {{currentUser}} - Active chat rooms</h3>
 <div class="well">
 	<ul ng-repeat="room in rooms">
 		<li data-ng-show="notBanned(room)"><a href="#/room/{{currentUser}}/{{room}}" >{{room}}</a></li>
