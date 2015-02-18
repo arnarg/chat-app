@@ -124,6 +124,7 @@ function ($scope, $routeParams, $location, socket){
 	$scope.messageHistory = [];
 	$scope.currentUser = $routeParams.currentUser;
 	$scope.roomName = $routeParams.room;
+	$scope.roomNameHistory = [];
 
 	socket.on("updatechat", function(roomName, messageHistory){
 		$scope.messageHistory = messageHistory;
@@ -131,11 +132,9 @@ function ($scope, $routeParams, $location, socket){
 
 	$scope.sendPrivateMessage = function(){
 		socket.emit("privatemsg", {nick: $scope.user, message: $scope.newMessage}, function(success){
+			console.log("aeji");
 			if(success) {
 				console.log("virkadi");
-				// Ef thad er thegar til roomname sem er eins tha redircta thangad
-				socket.emit("sendmsg", {roomName: $scope.currentRoom, msg: $scope.newMessage});
-				$scope.newMessage = "";
 			}
 			else {
 				$scope.errorMessage = "The message was not sent, please try again";

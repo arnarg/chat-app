@@ -41,7 +41,7 @@ function ($scope, $location, socket){
 				}
 			});
 		}
-	}
+	};
 });
 
 ChatClient.controller("NavbarController",
@@ -49,8 +49,8 @@ function ($scope, $location, socket){
 	$scope.rooms = function(){
 		console.log("navbarcontroller");
 		$location.path("/rooms/:user");
-	}
-})
+	};
+});
 
 ChatClient.controller("RoomController",
 function ($scope, $location, $routeParams, socket){
@@ -121,7 +121,7 @@ function ($scope, $location, $routeParams, socket){
 	$scope.backToRooms = function(){
 		socket.emit("partroom", $scope.currentRoom);
 		$location.path("/rooms/" + $scope.currentUser);
-	}
+	};
 
 	$scope.kickUser = function(userToKick){
 		socket.emit("kick", {user: userToKick, room: $scope.currentRoom}, function(success){
@@ -131,14 +131,14 @@ function ($scope, $location, $routeParams, socket){
 				console.log("kick failed");
 			}
 		});
-	}
-	
+	};
+
 	$scope.isUserOrOp = function(userToCheck){
 		if($scope.currentOps[userToCheck] !== undefined || $scope.currentUser === userToCheck || $scope.currentOps[$scope.currentUser] === undefined){
 			return true;
 		}
 		return false;
-	}
+	};
 });
 
 ChatClient.controller("PrivateController",
@@ -203,7 +203,7 @@ function ($scope, $location, $routeParams, socket){
 				}
 			});
 		}
-	}
+	};
 
 	$scope.notBanned = function(room){
 		var banlist = $scope.roomlist[room].banned;
@@ -211,7 +211,7 @@ function ($scope, $location, $routeParams, socket){
 			return false;
 		}
 		return true;
-	}
+	};
 });
 
 // Factory to wrap around the socket functions
@@ -236,7 +236,7 @@ ChatClient.factory('socket', function ($rootScope) {
                         callback.apply(socket, args);
                     }
                 });
-            })
+            });
         }
     };
 });

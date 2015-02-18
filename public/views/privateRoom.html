@@ -6,7 +6,7 @@
 <div class="col-md-9">
 	<div class="well">
 		<ul>
-			<li ng-repeat="privateMessage in privateMessageHistory">[{{message.timestamp | date:'H:mm'}}] {{message.nick}}: {{message.message}} </li>
+			<li ng-repeat="message in messageHistory">[{{message.timestamp | date:'H:mm'}}] {{message.nick}}: {{message.message}} </li>
 		</ul>
 		<input type = "text" class="form-control" id="newMessage" name="newMessage" data-ng-model="newMessage" />
 		<button type="button" class="btn btn-primary" data-ng-click="sendPrivateMessage()">Send</button>
