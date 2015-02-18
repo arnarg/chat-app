@@ -8,5 +8,5 @@
 	</ul>
 </div>
 
-<input type = "text" class="form-control" id="roomName" name="roomName" data-ng-model="roomName" />
-<button type="button" class="btn btn-primary" data-ng-click="createRoom()">Create new room</button>
+<input type = "text" class="form-control" id="roomName" name="roomName" data-ng-model="roomName" data-ng-keyup="$event.keyCode == 13 && createRoom()" />
+<button type="button" class="btn btn-primary" data-ng-click="createRoom()" >Create new room</button>

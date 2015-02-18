@@ -72,12 +72,14 @@ function ($scope, $location, $routeParams, $window, socket){
 	socket.on("kicked", function(room, kickee, kicker){
 		if(kickee === $scope.currentUser){
 			$location.path("/rooms/" + $scope.currentUser);
+			alert("An operator just kicked you from the room");
 		}
 	});
 
 	socket.on("banned", function(room, bannee, banner){
 		if(bannee === $scope.currentUser){
 			$location.path("/rooms/" + $scope.currentUser);
+			alert("An operator just banned you from the room");
 		}
 	});
 
@@ -90,11 +92,7 @@ function ($scope, $location, $routeParams, $window, socket){
 			$scope.newMessage = "";
 		}
 	};
-
-	$scope.back = function() {
-		$window.history.back();
-	};
-
+	
 	$scope.backToRooms = function(){
 		socket.emit("partroom", $scope.currentRoom);
 		$location.path("/rooms/" + $scope.currentUser);
