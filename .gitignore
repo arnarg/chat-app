@@ -11,4 +11,7 @@ node_modules/
 .DS_Store
 
 # concatinated js
-public/js/*.js
+src/dest/
+
+# minified js
+public/js/
