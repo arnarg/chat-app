@@ -32,18 +32,36 @@ function ($scope, $location, $routeParams, $window, socket){
 	$scope.message = "Hello from Room";
 	$scope.currentRoom = $routeParams.room;
 	$scope.currentUser = $routeParams.user;
-	$scope.currentUsers = [];
+	$scope.currentUsers = {};
+	$scope.currentOps = {};
 	$scope.errorMessage = "";
 	$scope.messageHistory = [];
 	$scope.newMessage = "";
+	$scope.roomTopic = "";
+	var joinmsg = "";
+	var partmsg = "";
 
 	socket.on("updatechat", function(roomName, messageHistory){
 		$scope.messageHistory = messageHistory;
+		$scope.roomTopic = "Welcome to the room! Please behave :((";
+	});
+
+	socket.on("servermessage", function(status, room, user){
+		if(status === "join"){
+			if($scope.currentUser === user){
+				if(joinmsg === ""){
+					joinmsg = " just joined in on the fun!";
+					socket.emit("sendmsg", {roomName: room, msg: joinmsg});
+				}
+				
+			}
+		}
 	});
 
 	socket.on("updateusers", function(roomName, users, ops){
 		// TODO: Check if the roomName equals the current room !
 		$scope.currentUsers = users;
+		$scope.currentOps = ops;
 	});
 
 	socket.emit("joinroom", {room: $scope.currentRoom}, function(success, why){
@@ -54,8 +72,19 @@ function ($scope, $location, $routeParams, $window, socket){
 		}
 	});
 
+	socket.on("kicked", function(room, kickee, kicker){
+		if(kickee === $scope.currentUser){
+			$location.path("/rooms/" + $scope.currentUser);
+		}
+	});
+
+	socket.on("banned", function(room, bannee, banner){
+		if(bannee === $scope.currentUser){
+			$location.path("/rooms/" + $scope.currentUser);
+		}
+	});
+
 	$scope.sendMessage = function(){
-		console.log($scope.currentUser);
 		if($scope.newMessage === "") {
 			$scope.errorMessage ="Please write a message";
 		} else {
@@ -69,6 +98,7 @@ function ($scope, $location, $routeParams, $window, socket){
 	}
 
 	$scope.backToRooms = function(){
+		socket.emit("partroom", $scope.currentRoom);
 		$location.path("/rooms/" + $scope.currentUser);
 	}
 
@@ -91,17 +121,22 @@ function ($scope, $routeParams, $location, socket){
 	$scope.errorMessage = "";
 	$scope.messageHistory = [];
 	$scope.currentUser = $routeParams.currentUser;
+	$scope.roomName = $routeParams.room;
+
+	socket.on("updatechat", function(roomName, messageHistory){
+		$scope.messageHistory = messageHistory;
+	});
 
 	$scope.sendPrivateMessage = function(){
-		console.log($scope.currentUser);
-		console.log($scope.user);
 		socket.emit("privatemsg", {nick: $scope.user, message: $scope.newMessage}, function(success){
 			if(success) {
 				console.log("virkadi");
+				// Ef thad er thegar til roomname sem er eins tha redircta thangad
+				socket.emit("sendmsg", {roomName: $scope.currentRoom, msg: $scope.newMessage});
 				$scope.newMessage = "";
 			}
 			else {
-				$scope.errorMessage ="The message was not sent, please try again";
+				$scope.errorMessage = "The message was not sent, please try again";
 			}
 		});
 	};
@@ -113,20 +148,23 @@ function ($scope, $routeParams, $location, socket){
 ChatClient.controller("RoomsController",
 function ($scope, $location, $routeParams, socket){
 	$scope.rooms = [];
+	$scope.roomlist = {};
 	$scope.roomName = "";
 	$scope.currentUser = $routeParams.user;
+	$scope.errorMessage = "";
 
 	socket.on("roomlist", function(data) {
-		$scope.message = data.lobby.topic;
 		console.log(data);
+		$scope.message = data.lobby.topic;
 		$scope.rooms = Object.keys(data);
+		$scope.roomlist = data;
 	});
 
 	socket.emit("rooms");
 
 	$scope.createRoom = function(){
 		if($scope.roomName === "") {
-			$scope.errorMessage ="Please write a message";
+			$scope.errorMessage ="Please write a name for your room";
 			console.log("no room name");
 		} else {
 			socket.emit("joinroom", {room: $scope.roomName}, function(success, reason){
@@ -139,5 +177,13 @@ function ($scope, $location, $routeParams, socket){
 				}
 			});
 		}
+	}
+
+	$scope.notBanned = function(room){
+		var banlist = $scope.roomlist[room].banned;
+		if(banlist[$scope.currentUser] !== undefined){
+			return false;
+		}
+		return true;
 	}
 });

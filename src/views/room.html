@@ -15,10 +15,16 @@
 	</div>
 </div>
 <div class="col-md-3">
+	<h4>Operators</h4>
+	<div class="well">
+		<ul>
+		    <li ng-repeat="op in currentOps"><a href="#/privateRoom/{{op}}">{{op}}</a></li>
+		</ul>
+	</div>
 	<h4>Users in this room</h4>
 	<div class="well">
 		<ul>
-			<li ng-repeat="user in currentUsers"><a href="#/privateRoom/{{user}}" data-ng-model="currentUser">{{user}}</a> <a data-ng-click="kickUser(user)">Kick</a> <a data-ng-click="banUser(user)">Ban</a></li>
+			<li ng-repeat="user in currentUsers"><a href="#/room/{{user}}/{{currentUser}}">{{user}}</a> <a data-ng-click="kickUser(user)">Kick</a> <a data-ng-click="banUser(user)">Ban</a></li>
 		</ul>
 	</div>
 </div>

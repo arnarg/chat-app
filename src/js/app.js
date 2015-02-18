@@ -14,7 +14,7 @@ ChatClient.config(function ($routeProvider){
 		templateUrl: "views/rooms.html",
 		controller: "RoomsController"
 	})
-	.when("/privateRoom/:user/", {
+	.when("/room/:user/:currentUser", {
 		templateUrl: "views/privateRoom.html",
 		controller: "PrivateController"
 	})
