@@ -20,32 +20,80 @@ function ($scope, $location, socket){
 	};
 }]);
 
-ChatClient.controller("NavbarController",
-["$scope", "$location", "socket",
-function ($scope, $location, socket){
-	$scope.rooms = function(){
-		console.log("navbarcontroller");
-		$location.path("/rooms/:user");
+ChatClient.controller("RoomPrivateController",
+["$scope", "$state", "$stateParams", "socket",
+function ($scope, $state, $stateParams, socket) {
+	$scope.otherUser = $stateParams.other;
+	console.log($scope.otherUser);
+	$scope.newMessage = "";
+}]);
+
+ChatClient.controller("RoomPublicController",
+["$scope", "$state", "$stateParams", "socket",
+function ($scope, $state, $stateParams, socket) {
+	$scope.newMessage = "";
+
+	$scope.sendMessage = function(){
+		if($scope.newMessage === "") {
+			$scope.$parent.errorMessage = "Please write a message";
+		} else {
+			socket.emit("sendmsg", {roomName: $scope.currentRoom, msg: $scope.newMessage});
+			$scope.newMessage = "";
+			$scope.$parent.errorMessage = "";
+		}
 	};
 }]);
 
 ChatClient.controller("RoomController",
-["$scope", "$location", "$routeParams", "socket",
-function ($scope, $location, $routeParams, socket){
+["$scope", "$location", "$stateParams", "socket",
+function ($scope, $location, $stateParams, socket){
+	$scope.currentRoom = $stateParams.room;
+	$scope.currentUser = $stateParams.user;
+
+	$scope.tabData = [
+		{
+			heading: $scope.currentRoom,
+			route: "room.public",
+			active: true,
+			params: {
+				user: $scope.currentUser,
+				room: $scope.currentRoom
+			}
+		},
+		{ // Dummy content
+			heading: "arnar",
+			route: "room.private",
+			active: false,
+			params: {
+				user: $scope.currentUser,
+				room: $scope.currentRoom,
+				other: "arnar"
+			}
+		}
+	];
+
+	$scope.$on('$stateChangeSuccess', function() {
+		console.log($stateParams);
+	});
+
+	$scope.$on('$stateChangeStart', function() {
+		console.log("start");
+	});
+
 	$scope.message = "Hello from Room";
-	$scope.currentRoom = $routeParams.room;
-	$scope.currentUser = $routeParams.user;
 	$scope.currentUsers = {};
 	$scope.currentOps = {};
 	$scope.errorMessage = "";
-	$scope.messageHistory = [];
-	$scope.newMessage = "";
+	$scope.messageHistory = {
+		public: []
+	};
 	$scope.roomTopic = "";
 	var joinmsg = "";
 	var partmsg = "";
 
 	socket.on("updatechat", function(roomName, messageHistory){
-		$scope.messageHistory = messageHistory;
+		$scope.messageHistory.public = messageHistory;
+		console.log($scope.messageHistory);
 		//$("#chatWindow").prop({ scrollTop: $("#chatWindow").prop("scrollHeight") });
 		$("#chatWindow").animate({ scrollTop: $(document).height() }, "fast");
 	});
@@ -88,15 +136,6 @@ function ($scope, $location, $routeParams, socket){
 			alert("An operator just banned you from the room");
 		}
 	});
-
-	$scope.sendMessage = function(){
-		if($scope.newMessage === "") {
-			$scope.errorMessage ="Please write a message";
-		} else {
-			socket.emit("sendmsg", {roomName: $scope.currentRoom, msg: $scope.newMessage});
-			$scope.newMessage = "";
-		}
-	};
 
 	$scope.backToRooms = function(){
 		socket.emit("partroom", $scope.currentRoom);
@@ -153,12 +192,12 @@ function ($scope, $location, $routeParams, socket){
 }]);
 
 ChatClient.controller("RoomsController",
-["$scope", "$location", "$routeParams", "socket",
-function ($scope, $location, $routeParams, socket){
+["$scope", "$location", "$stateParams", "socket",
+function ($scope, $location, $stateParams, socket){
 	$scope.rooms = [];
 	$scope.roomlist = {};
 	$scope.roomName = "";
-	$scope.currentUser = $routeParams.user;
+	$scope.currentUser = $stateParams.user;
 	$scope.errorMessage = "";
 
 	socket.on("roomlist", function(data) {

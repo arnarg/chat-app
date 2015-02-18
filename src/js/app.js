@@ -1,24 +1,38 @@
-var ChatClient = angular.module("ChatClient", ['ngRoute']);
+var ChatClient = angular.module("ChatClient", [
+	'ui.router',
+	'ui.router.tabs',
+	'ui.bootstrap',
+	'ui.bootstrap.tpls'
+]);
 
-ChatClient.config(["$routeProvider", function ($routeProvider){
-	$routeProvider
-	.when("/login", {
-		templateUrl: "views/login.html",
-		controller: "LoginController"
-	})
-	.when("/room/:user/:room/", {
-		templateUrl: "views/room.html",
-		controller: "RoomController"
-	})
-	.when("/rooms/:user/", {
-		templateUrl: "views/rooms.html",
-		controller: "RoomsController"
-	})
-	.when("/room/private/:user:currentUser", {
-		templateUrl: "views/privateRoom.html",
-		controller: "RoomController"
-	})
-	.otherwise({
-		redirectTo: "/login"
-	});
+ChatClient.config(["$stateProvider", "$urlRouterProvider",
+function ($stateProvider, $urlRouterProvider){
+	$urlRouterProvider.otherwise("/login");
+
+	$stateProvider
+		.state("login", {
+			url: "/login",
+			templateUrl: "views/login.html",
+			controller: "LoginController"
+		})
+		.state("rooms", {
+			url: "/rooms/:user",
+			templateUrl: "views/rooms.html",
+			controller: "RoomsController"
+		})
+		.state("room", {
+			url: "/room/:user/:room",
+			templateUrl: "views/room.html",
+			controller: "RoomController"
+		})
+		.state("room.public", {
+			url: "",
+			templateUrl: "views/room.public.html",
+			controller: "RoomPublicController"
+		})
+		.state("room.private", {
+			url: "/private/:other",
+			templateUrl: "views/room.private.html",
+			controller: "RoomPrivateController"
+		});
 }]);

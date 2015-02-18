@@ -4,9 +4,16 @@
     <title>Chat server</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script src="vendor/angular/angular.min.js"></script>
+    <script src="vendor/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <script src="vendor/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+    <script src="vendor/angular-ui-router-tabs/src/ui-router-tabs.js"></script>
+    <script src="vendor/socket.io-client/dist/socket.io.min.js"></script>
 </head>
 <body ng-app="ChatClient">
-    <nav class="navbar navbar-inverse navbar-static-top" data-ng-controller="NavbarController">
+    <nav class="navbar navbar-inverse navbar-static-top">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -25,16 +32,11 @@
         </div>
     </nav>
     <div class="container">
-        <div class="view" ng-view>
+        <div class="view" ui-view>
             Augnablik ...
         </div>
     </div>
 
-    <script src="vendor/angular/angular.min.js"></script>
-    <script src="vendor/angular-route/angular-route.min.js"></script>
-    <script src="vendor/socket.io-client/dist/socket.io.min.js"></script>
-    <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>

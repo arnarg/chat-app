@@ -2,28 +2,31 @@
 	{{errorMessage}}
 </div>
 
-<h3>Hi {{currentUser}} - Room: {{currentRoom}}</h3>
-<div class="col-md-9">
-	<div class="well">
-		<ul id="chatWindow">
-			<li ng-repeat="message in messageHistory">[{{message.timestamp | date:'H:mm'}}] {{message.nick}}: {{message.message}} </li>
-		</ul>
-		<input type = "text" class="form-control" id="newMessage" name="newMessage" data-ng-model="newMessage" data-ng-keyup="$event.keyCode == 13 && sendMessage()"/>
-		<button type="button" class="btn btn-primary" data-ng-click="sendMessage()">Send</button>
-		<button type="button" class="btn btn-primary" data-ng-click="backToRooms()">Back to Rooms</button>
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<h3>Hi {{currentUser}} - Room: {{currentRoom}}</h3>
+		</div>
 	</div>
-</div>
-<div class="col-md-3">
-	<h4>Operators</h4>
-	<div class="well">
-		<ul>
-			<li ng-repeat="op in currentOps"><a href="#/privateRoom/{{op}}">{{op}}</a></li>
-		</ul>
-	</div>
-	<h4>Users in this room</h4>
-	<div class="well">
-		<ul>
-			<li ng-repeat="user in currentUsers"><a ng-href ng-click="privateMessage(user)">{{user}}</a> <a data-ng-click="kickUser(user)" data-ng-hide="isUserOrOp(user)">Kick</a> <a data-ng-click="banUser(user)" data-ng-hide="isUserOrOp(user)">Ban</a></li>
-		</ul>
+	<div class="row">
+		<div class="col-md-9">
+			<tabs data="tabData" type="tabs" />
+			<div ui-view></div>
+		</div>
+		<div class="col-md-3">
+			<h4>Operators</h4>
+			<div class="well">
+				<ul>
+					<li ng-repeat="op in currentOps"><a href="#/privateRoom/{{op}}">{{op}}</a></li>
+				</ul>
+			</div>
+			<h4>Users in this room</h4>
+			<div class="well">
+				<ul>
+					<li ng-repeat="user in currentUsers"><a ng-href ng-click="privateMessage(user)">{{user}}</a> <a data-ng-click="kickUser(user)" data-ng-hide="isUserOrOp(user)">Kick</a> <a data-ng-click="banUser(user)" data-ng-hide="isUserOrOp(user)">Ban</a></li>
+				</ul>
+			</div>
+		</div>
 	</div>
 </div>
