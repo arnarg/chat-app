@@ -77,15 +77,15 @@ function ($scope, $location, $routeParams, socket){
 
 	socket.on("kicked", function(room, kickee, kicker){
 		if(kickee === $scope.currentUser){
-			$location.path("/rooms/" + $scope.currentUser);
 			alert("An operator just kicked you from the room");
+			$location.path("/rooms/" + $scope.currentUser);
 		}
 	});
 
 	socket.on("banned", function(room, bannee, banner){
 		if(bannee === $scope.currentUser){
-			$location.path("/rooms/" + $scope.currentUser);
 			alert("An operator just banned you from the room");
+			$location.path("/rooms/" + $scope.currentUser);
 		}
 	});
 
@@ -167,6 +167,7 @@ ChatClient.controller("RoomsController",
 function ($scope, $location, $routeParams, socket){
 	$scope.rooms = [];
 	$scope.roomlist = {};
+	$scope.userlist = [];
 	$scope.roomName = "";
 	$scope.currentUser = $routeParams.user;
 	$scope.errorMessage = "";
@@ -175,7 +176,17 @@ function ($scope, $location, $routeParams, socket){
 		$scope.message = data.lobby.topic;
 		$scope.rooms = Object.keys(data);
 		$scope.roomlist = data;
+		console.log(data);
+		getUsers();
 	});
+
+	function getUsers(){
+		for(var room in $scope.roomlist){
+			for(var user in $scope.roomlist[room].users){
+				$scope.userlist.push(user);
+			}
+		}		
+	}
 
 	socket.emit("rooms");
 
