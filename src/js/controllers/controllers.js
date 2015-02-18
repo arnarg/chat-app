@@ -77,15 +77,15 @@ function ($scope, $location, $routeParams, socket){
 
 	socket.on("kicked", function(room, kickee, kicker){
 		if(kickee === $scope.currentUser){
-			alert("An operator just kicked you from the room");
 			$location.path("/rooms/" + $scope.currentUser);
+			alert("An operator just kicked you from the room");
 		}
 	});
 
 	socket.on("banned", function(room, bannee, banner){
 		if(bannee === $scope.currentUser){
-			alert("An operator just banned you from the room");
 			$location.path("/rooms/" + $scope.currentUser);
+			alert("An operator just banned you from the room");
 		}
 	});
 
@@ -129,24 +129,14 @@ function ($scope, $location, $routeParams, socket){
 		}
 		return false;
 	};
-}]);
 
-ChatClient.controller("PrivateController",
-["$scope", "$routeParams", "$location", "socket",
-function ($scope, $routeParams, $location, socket){
-	$scope.user = $routeParams.user;
-	$scope.newMessage = "";
-	$scope.errorMessage = "";
-	$scope.messageHistory = [];
-	$scope.currentUser = $routeParams.currentUser;
-	$scope.roomName = $routeParams.room;
-	$scope.roomNameHistory = [];
-
-	socket.on("updatechat", function(roomName, messageHistory){
-		$scope.messageHistory = messageHistory;
-	});
+	$scope.privateMessage = function(user) {
+		$scope.user = user;
+		$location.path("/room/private/" + $scope.user + ":" + $scope.currentUser);
+	};
 
 	$scope.sendPrivateMessage = function(){
+		// senda msg a thann sem er ad fa msg-id
 		socket.emit("privatemsg", {nick: $scope.user, message: $scope.newMessage}, function(success){
 			console.log("aeji");
 			if(success) {
@@ -167,7 +157,6 @@ ChatClient.controller("RoomsController",
 function ($scope, $location, $routeParams, socket){
 	$scope.rooms = [];
 	$scope.roomlist = {};
-	$scope.userlist = [];
 	$scope.roomName = "";
 	$scope.currentUser = $routeParams.user;
 	$scope.errorMessage = "";
@@ -176,17 +165,7 @@ function ($scope, $location, $routeParams, socket){
 		$scope.message = data.lobby.topic;
 		$scope.rooms = Object.keys(data);
 		$scope.roomlist = data;
-		console.log(data);
-		getUsers();
 	});
-
-	function getUsers(){
-		for(var room in $scope.roomlist){
-			for(var user in $scope.roomlist[room].users){
-				$scope.userlist.push(user);
-			}
-		}		
-	}
 
 	socket.emit("rooms");
 
