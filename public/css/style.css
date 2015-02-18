@@ -1,0 +1,15 @@
+ul {
+	padding: 0;
+	list-style-type: none;
+	
+}
+
+#chatWindow {
+	height: 300px;
+	overflow: scroll;
+	overflow-x: hidden; 
+}
+
+#newMessage {
+	margin: 5px;
+}

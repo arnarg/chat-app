@@ -43,6 +43,8 @@ function ($scope, $location, $routeParams, socket){
 
 	socket.on("updatechat", function(roomName, messageHistory){
 		$scope.messageHistory = messageHistory;
+		//$("#chatWindow").prop({ scrollTop: $("#chatWindow").prop("scrollHeight") });
+		$("#chatWindow").animate({ scrollTop: $(document).height() }, "fast");
 	});
 
 	socket.on("servermessage", function(status, room, user){
@@ -104,6 +106,16 @@ function ($scope, $location, $routeParams, socket){
 				console.log("kicked successfully");
 			} else {
 				console.log("kick failed");
+			}
+		});
+	};
+
+	$scope.banUser = function(userToBan){
+		socket.emit("ban", {user: userToBan, room: $scope.currentRoom}, function(success){
+			if(success){
+				console.log("banned successfully");
+			} else {
+				console.log("ban failed");
 			}
 		});
 	};

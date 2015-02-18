@@ -2,10 +2,10 @@
 	{{errorMessage}}
 </div>
 
-<h3>Hi {{currentUser}} - Room {{currentRoom}}</h3>
+<h3>Hi {{currentUser}} - Room: {{currentRoom}}</h3>
 <div class="col-md-9">
 	<div class="well">
-		<ul>
+		<ul id="chatWindow">
 			<li ng-repeat="message in messageHistory">[{{message.timestamp | date:'H:mm'}}] {{message.nick}}: {{message.message}} </li>
 		</ul>
 		<input type = "text" class="form-control" id="newMessage" name="newMessage" data-ng-model="newMessage" data-ng-keyup="$event.keyCode == 13 && sendMessage()"/>
