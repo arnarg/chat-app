@@ -157,21 +157,23 @@ function ($scope, $routeParams, $location, socket){
 ChatClient.controller("RoomsController",
 function ($scope, $location, $routeParams, socket){
 	$scope.rooms = [];
+	$scope.roomlist = {};
 	$scope.roomName = "";
 	$scope.currentUser = $routeParams.user;
 	$scope.errorMessage = "";
 
 	socket.on("roomlist", function(data) {
-		$scope.message = data.lobby.topic;
 		console.log(data);
+		$scope.message = data.lobby.topic;
 		$scope.rooms = Object.keys(data);
+		$scope.roomlist = data;
 	});
 
 	socket.emit("rooms");
 
 	$scope.createRoom = function(){
 		if($scope.roomName === "") {
-			$scope.errorMessage ="Please write a name for you room";
+			$scope.errorMessage ="Please write a name for your room";
 			console.log("no room name");
 		} else {
 			socket.emit("joinroom", {room: $scope.roomName}, function(success, reason){
@@ -184,5 +186,13 @@ function ($scope, $location, $routeParams, socket){
 				}
 			});
 		}
+	}
+
+	$scope.notBanned = function(room){
+		var banlist = $scope.roomlist[room].banned;
+		if(banlist[$scope.currentUser] !== undefined){
+			return false;
+		}
+		return true;
 	}
 });
