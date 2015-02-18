@@ -122,6 +122,13 @@ function ($scope, $location, $routeParams, $window, socket){
 		});
 	}
 
+	$scope.isUserOrOp = function(userToCheck){
+		if($scope.currentOps[userToCheck] !== undefined || $scope.currentUser === userToCheck || $scope.currentOps[$scope.currentUser] === undefined){
+			return true;
+		}
+		return false;
+	}
+
 
 });
 
