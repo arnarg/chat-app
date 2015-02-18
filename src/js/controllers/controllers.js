@@ -42,7 +42,6 @@ function ($scope, $location, $routeParams, $window, socket){
 
 	socket.on("updatechat", function(roomName, messageHistory){
 		$scope.messageHistory = messageHistory;
-		$scope.roomTopic = "Welcome to the room! Please behave :((";
 	});
 
 	socket.on("servermessage", function(status, room, user){
@@ -52,7 +51,6 @@ function ($scope, $location, $routeParams, $window, socket){
 					joinmsg = " just joined in on the fun!";
 					socket.emit("sendmsg", {roomName: room, msg: joinmsg});
 				}
-				
 			}
 		} 
 	});
@@ -103,7 +101,6 @@ function ($scope, $location, $routeParams, $window, socket){
 	};
 
 	$scope.kickUser = function(userToKick){
-		console.log(userToKick);
 		socket.emit("kick", {user: userToKick, room: $scope.currentRoom}, function(success){
 			if(success){
 				kickMsg = userToKick + " just got kicked!";
@@ -163,7 +160,6 @@ function ($scope, $location, $routeParams, socket){
 	$scope.errorMessage = "";
 
 	socket.on("roomlist", function(data) {
-		console.log(data);
 		$scope.message = data.lobby.topic;
 		$scope.rooms = Object.keys(data);
 		$scope.roomlist = data;
@@ -173,7 +169,7 @@ function ($scope, $location, $routeParams, socket){
 
 	$scope.createRoom = function(){
 		if($scope.roomName === "") {
-			$scope.errorMessage ="Please write a name for your room";
+			$scope.errorMessage = "Please write a name for your room";
 			console.log("no room name");
 		} else {
 			socket.emit("joinroom", {room: $scope.roomName}, function(success, reason){
