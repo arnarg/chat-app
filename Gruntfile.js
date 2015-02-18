@@ -1,5 +1,6 @@
 module.exports = function (grunt) {
 	var taskConfig = {
+		pkg: grunt.file.readJSON('package.json'),
 		jshint: {
 			src: ['src/js/**/*.js'],
 			gruntfile: ['Gruntfile.js'],
@@ -12,7 +13,7 @@ module.exports = function (grunt) {
 			},
 			dist: {
 				src: ['src/js/app.js', 'src/js/**/*.js'],
-				dest: 'public/js/app.js'
+				dest: 'src/dest/app.js'
 			}
 		},
 		uglify: {
@@ -21,7 +22,7 @@ module.exports = function (grunt) {
 			},
 			dist: {
 				files: {
-					'src/js/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
+					'public/js/app.js': ['src/dest/app.js']
 				}
 			}
 		}

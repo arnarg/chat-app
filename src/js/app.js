@@ -1,6 +1,6 @@
 var ChatClient = angular.module("ChatClient", ['ngRoute']);
 
-ChatClient.config(function ($routeProvider){
+ChatClient.config(["$routeProvider", function ($routeProvider){
 	$routeProvider
 	.when("/login", {
 		templateUrl: "views/login.html",
@@ -21,4 +21,4 @@ ChatClient.config(function ($routeProvider){
 	.otherwise({
 		redirectTo: "/login"
 	});
-});
+}]);

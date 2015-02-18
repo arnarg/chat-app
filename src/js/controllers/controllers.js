@@ -1,4 +1,5 @@
 ChatClient.controller("LoginController",
+["$scope", "$location", "socket",
 function ($scope, $location, socket){
 	$scope.errorMessage = "";
 	$scope.nickname = "";
@@ -17,17 +18,19 @@ function ($scope, $location, socket){
 			});
 		}
 	};
-});
+}]);
 
 ChatClient.controller("NavbarController",
+["$scope", "$location", "socket",
 function ($scope, $location, socket){
 	$scope.rooms = function(){
 		console.log("navbarcontroller");
 		$location.path("/rooms/:user");
 	};
-});
+}]);
 
 ChatClient.controller("RoomController",
+["$scope", "$location", "$routeParams", "socket",
 function ($scope, $location, $routeParams, socket){
 	$scope.message = "Hello from Room";
 	$scope.currentRoom = $routeParams.room;
@@ -126,9 +129,10 @@ function ($scope, $location, $routeParams, socket){
 		}
 		return false;
 	};
-});
+}]);
 
 ChatClient.controller("PrivateController",
+["$scope", "$routeParams", "$location", "socket",
 function ($scope, $routeParams, $location, socket){
 	$scope.user = $routeParams.user;
 	$scope.newMessage = "";
@@ -156,9 +160,10 @@ function ($scope, $routeParams, $location, socket){
 	socket.on("recv_privatemsg", function(nick, message){
 		$scope.newMessage = message;
 	});
-});
+}]);
 
 ChatClient.controller("RoomsController",
+["$scope", "$location", "$routeParams", "socket",
 function ($scope, $location, $routeParams, socket){
 	$scope.rooms = [];
 	$scope.roomlist = {};
@@ -198,4 +203,4 @@ function ($scope, $location, $routeParams, socket){
 		}
 		return true;
 	};
-});
+}]);
