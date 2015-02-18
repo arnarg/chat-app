@@ -21,10 +21,11 @@ module.exports = function (grunt) {
 					moment:  false,
 					console: false,
 					$:       false,
-					io:      false
+					io:      false,
+					ChatClient: true // global variable for the angular module
 				}
 			},
-			src: ['src/dest/app.js'],
+			src: ['src/js/app.js', 'src/js/**/*.js'],
 			gruntfile: ['Gruntfile.js']
 		},
 		concat: {
@@ -48,7 +49,7 @@ module.exports = function (grunt) {
 		}
 	};
 
-	grunt.registerTask('default', ['concat', 'jshint', 'uglify']);
+	grunt.registerTask('default', ['jshint', 'concat', 'uglify']);
 
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-concat');
