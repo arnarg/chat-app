@@ -1,1 +1,10 @@
-Hi from private
+<div class="well">
+    <ul id="chatWindow">
+        <li ng-repeat="message in messageHistory[otherUser]">[{{message.timestamp | date:'H:mm'}}] {{message.nick}}: {{message.message}} </li>
+    </ul>
+    <input type="text" class="form-control" id="newMessage" name="newMessage"
+        data-ng-model="newMessage"
+        data-ng-keyup="$event.keyCode == 13 && sendMessage()"/>
+    <button type="button" class="btn btn-primary" data-ng-click="sendMessage()">Send</button>
+    <button type="button" class="btn btn-primary" data-ng-click="backToRooms()">Back to Rooms</button>
+</div>

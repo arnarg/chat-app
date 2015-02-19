@@ -26,6 +26,23 @@ function ($scope, $state, $stateParams, socket) {
 	$scope.otherUser = $stateParams.other;
 	console.log($scope.otherUser);
 	$scope.newMessage = "";
+
+	$scope.sendMessage = function(){
+		// senda msg a thann sem er ad fa msg-id
+		socket.emit("privatemsg", {nick: $scope.otherUser, message: $scope.newMessage}, function(success){
+			if(success) {
+				$scope.$parent.messageHistory[$scope.otherUser].push({
+					timestamp: Date.now(),
+					nick: $scope.currentUser,
+					message: $scope.newMessage
+				});
+				console.log("virkadi");
+			}
+			else {
+				$scope.$parent.errorMessage = "The message was not sent, please try again";
+			}
+		});
+	};
 }]);
 
 ChatClient.controller("RoomPublicController",
@@ -170,24 +187,42 @@ function ($scope, $location, $stateParams, socket){
 	};
 
 	$scope.privateMessage = function(user) {
-		$scope.user = user;
-		$location.path("/room/private/" + $scope.user + ":" + $scope.currentUser);
+		console.log("private message");
+		if ($scope.messageHistory[user] === undefined) {
+			$scope.tabData.push({
+				heading: user,
+				route: "room.private",
+				active: true,
+				params: {
+					user: $scope.currentUser,
+					room: $scope.currentRoom,
+					other: user
+				}
+			});
+			$scope.messageHistory[user] = [];
+		}
+		console.log($scope.messageHistory);
 	};
 
-	$scope.sendPrivateMessage = function(){
-		// senda msg a thann sem er ad fa msg-id
-		socket.emit("privatemsg", {nick: $scope.user, message: $scope.newMessage}, function(success){
-			console.log("aeji");
-			if(success) {
-				console.log("virkadi");
-			}
-			else {
-				$scope.errorMessage = "The message was not sent, please try again";
-			}
-		});
-	};
 	socket.on("recv_privatemsg", function(nick, message){
-		$scope.newMessage = message;
+		if ($scope.messageHistory[nick] === undefined) {
+			$scope.tabData.push({
+				heading: nick,
+				route: "room.private",
+				active: true,
+				params: {
+					user: $scope.currentUser,
+					room: $scope.currentRoom,
+					other: nick
+				}
+			});
+			$scope.messageHistory[nick] = [];
+		}
+		$scope.messageHistory[nick].push({
+			timestamp: Date.now(),
+			nick: nick,
+			message: message
+		});
 	});
 }]);
 
