@@ -37,6 +37,7 @@ function ($scope, $state, $stateParams, socket) {
 					message: $scope.newMessage
 				});
 				console.log("virkadi");
+				$scope.newMessage = "";
 			}
 			else {
 				$scope.$parent.errorMessage = "The message was not sent, please try again";
