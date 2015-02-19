@@ -76,16 +76,6 @@ function ($scope, $location, $stateParams, socket){
 				user: $scope.currentUser,
 				room: $scope.currentRoom
 			}
-		},
-		{ // Dummy content
-			heading: "arnar",
-			route: "room.private",
-			active: false,
-			params: {
-				user: $scope.currentUser,
-				room: $scope.currentRoom,
-				other: "arnar"
-			}
 		}
 	];
 
