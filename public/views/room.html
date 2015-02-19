@@ -2,6 +2,7 @@
 	{{errorMessage}}
 </div>
 
+<tab-heading>hi</tab-heading>
 
 <div class="container">
 	<div class="row">
@@ -11,7 +12,18 @@
 	</div>
 	<div class="row">
 		<div class="col-md-9">
-			<tabs data="tabData" type="tabs" />
+			<tabset>
+				<tab ng-repeat="t in tabData"
+						ui-sref="{{t.route}}" active="t.active"
+						select="go(t.route, t.params)">
+					<tab-heading>
+						{{t.heading}}
+						<a ng-click="closeTab(t)" ng-show="t.closable">
+							<span class="glyphicon glyphicon-remove"></span>
+						</a>
+					</tab-heading>
+				</tab>
+			</tabset>
 			<div ui-view></div>
 		</div>
 		<div class="col-md-3">

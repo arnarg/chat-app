@@ -1,6 +1,5 @@
 var ChatClient = angular.module("ChatClient", [
 	'ui.router',
-	'ui.router.tabs',
 	'ui.bootstrap',
 	'ui.bootstrap.tpls'
 ]);

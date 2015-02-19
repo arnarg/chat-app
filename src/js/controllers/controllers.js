@@ -63,8 +63,8 @@ function ($scope, $state, $stateParams, socket) {
 }]);
 
 ChatClient.controller("RoomController",
-["$scope", "$location", "$stateParams", "socket",
-function ($scope, $location, $stateParams, socket){
+["$scope", "$state", "$stateParams", "socket",
+function ($scope, $state, $stateParams, socket){
 	$scope.currentRoom = $stateParams.room;
 	$scope.currentUser = $stateParams.user;
 
@@ -73,20 +73,22 @@ function ($scope, $location, $stateParams, socket){
 			heading: $scope.currentRoom,
 			route: "room.public",
 			active: true,
-			params: {
-				user: $scope.currentUser,
-				room: $scope.currentRoom
-			}
+			params: {},
+			closable: false
 		}
 	];
 
-	$scope.$on('$stateChangeSuccess', function() {
-		console.log($stateParams);
-	});
+	$scope.go = function(state, params) {
+		$state.go(state, params);
+	};
 
-	$scope.$on('$stateChangeStart', function() {
-		console.log("start");
-	});
+	$scope.closeTab = function(tab) {
+		var index = $scope.tabData.indexOf(tab);
+		if (index > -1) {
+			$scope.messageHistory[tab.heading] = undefined;
+			$scope.tabData.splice(index, 1);
+		}
+	};
 
 	$scope.message = "Hello from Room";
 	$scope.currentUsers = {};
@@ -133,21 +135,24 @@ function ($scope, $location, $stateParams, socket){
 
 	socket.on("kicked", function(room, kickee, kicker){
 		if(kickee === $scope.currentUser){
-			$location.path("/rooms/" + $scope.currentUser);
+			$state.go("rooms", { user: $scope.currentUser });
+			//$location.path("/rooms/" + $scope.currentUser);
 			alert("An operator just kicked you from the room");
 		}
 	});
 
 	socket.on("banned", function(room, bannee, banner){
 		if(bannee === $scope.currentUser){
-			$location.path("/rooms/" + $scope.currentUser);
+			$state.go("rooms", { user: $scope.currentUser });
+			//$location.path("/rooms/" + $scope.currentUser);
 			alert("An operator just banned you from the room");
 		}
 	});
 
 	$scope.backToRooms = function(){
 		socket.emit("partroom", $scope.currentRoom);
-		$location.path("/rooms/" + $scope.currentUser);
+		$state.go("rooms", { user: $scope.currentUser });
+		//$location.path("/rooms/" + $scope.currentUser);
 	};
 
 	$scope.kickUser = function(userToKick){
@@ -185,10 +190,9 @@ function ($scope, $location, $stateParams, socket){
 				route: "room.private",
 				active: true,
 				params: {
-					user: $scope.currentUser,
-					room: $scope.currentRoom,
 					other: user
-				}
+				},
+				closable: true
 			});
 			$scope.messageHistory[user] = [];
 		}
@@ -202,10 +206,9 @@ function ($scope, $location, $stateParams, socket){
 				route: "room.private",
 				active: false,
 				params: {
-					user: $scope.currentUser,
-					room: $scope.currentRoom,
 					other: nick
-				}
+				},
+				closable: true
 			});
 			$scope.messageHistory[nick] = [];
 		}
