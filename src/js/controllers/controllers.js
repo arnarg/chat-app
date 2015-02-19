@@ -200,7 +200,7 @@ function ($scope, $location, $stateParams, socket){
 			$scope.tabData.push({
 				heading: nick,
 				route: "room.private",
-				active: true,
+				active: false,
 				params: {
 					user: $scope.currentUser,
 					room: $scope.currentRoom,
