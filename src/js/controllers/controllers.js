@@ -1,6 +1,6 @@
 ChatClient.controller("LoginController",
-["$scope", "$location", "socket",
-function ($scope, $location, socket){
+["$scope", "$state", "socket",
+function ($scope, $state, socket){
 	$scope.errorMessage = "";
 	$scope.nickname = "";
 	$scope.message = "Hello from Login";
@@ -11,7 +11,7 @@ function ($scope, $location, socket){
 		} else {
 			socket.emit("adduser", $scope.nickname, function(available){
 				if(available){
-					$location.path("/rooms/" + $scope.nickname);
+					$state.go("rooms", { user: $scope.nickname });
 				} else{
 					$scope.errorMessage = "This nickname is already taken";
 				}
@@ -24,7 +24,6 @@ ChatClient.controller("RoomPrivateController",
 ["$scope", "$state", "$stateParams", "socket",
 function ($scope, $state, $stateParams, socket) {
 	$scope.otherUser = $stateParams.other;
-	console.log($scope.otherUser);
 	$scope.newMessage = "";
 
 	$scope.sendMessage = function(){
@@ -38,6 +37,7 @@ function ($scope, $state, $stateParams, socket) {
 				});
 				console.log("virkadi");
 				$scope.newMessage = "";
+				$scope.$parent.errorMessage = "";
 			}
 			else {
 				$scope.$parent.errorMessage = "The message was not sent, please try again";
@@ -68,6 +68,18 @@ function ($scope, $state, $stateParams, socket){
 	$scope.currentRoom = $stateParams.room;
 	$scope.currentUser = $stateParams.user;
 
+	$scope.message = "Hello from Room";
+	$scope.currentUsers = {};
+	$scope.currentOps = {};
+	$scope.errorMessage = "";
+	$scope.messageHistory = {
+		public: []
+	};
+	$scope.roomTopic = "";
+	var joinmsg = "";
+	var partmsg = "";
+
+	// Tabs
 	$scope.tabData = [
 		{
 			heading: $scope.currentRoom,
@@ -90,17 +102,20 @@ function ($scope, $state, $stateParams, socket){
 		}
 	};
 
-	$scope.message = "Hello from Room";
-	$scope.currentUsers = {};
-	$scope.currentOps = {};
-	$scope.errorMessage = "";
-	$scope.messageHistory = {
-		public: []
+	$scope.createPrivateTab = function(user, isActive) {
+		$scope.tabData.push({
+			heading: user,
+			route: "room.private",
+			active: isActive,
+			params: {
+				other: user
+			},
+			closable: true
+		});
+		$scope.messageHistory[user] = [];
 	};
-	$scope.roomTopic = "";
-	var joinmsg = "";
-	var partmsg = "";
 
+	// Socket event handlers
 	socket.on("updatechat", function(roomName, messageHistory){
 		$scope.messageHistory.public = messageHistory;
 		console.log($scope.messageHistory);
@@ -125,6 +140,32 @@ function ($scope, $state, $stateParams, socket){
 		$scope.currentOps = ops;
 	});
 
+	socket.on("kicked", function(room, kickee, kicker){
+		if(kickee === $scope.currentUser){
+			$state.go("rooms", { user: $scope.currentUser });
+			alert("An operator just kicked you from the room");
+		}
+	});
+
+	socket.on("banned", function(room, bannee, banner){
+		if(bannee === $scope.currentUser){
+			$state.go("rooms", { user: $scope.currentUser });
+			alert("An operator just banned you from the room");
+		}
+	});
+
+	socket.on("recv_privatemsg", function(nick, message){
+		if ($scope.messageHistory[nick] === undefined) {
+			$scope.createPrivateTab(nick, false);
+		}
+		$scope.messageHistory[nick].push({
+			timestamp: Date.now(),
+			nick: nick,
+			message: message
+		});
+	});
+
+	// Sending the server that we want to join the room
 	socket.emit("joinroom", {room: $scope.currentRoom}, function(success, why){
 		if(success){
 			console.log("success");
@@ -133,26 +174,10 @@ function ($scope, $state, $stateParams, socket){
 		}
 	});
 
-	socket.on("kicked", function(room, kickee, kicker){
-		if(kickee === $scope.currentUser){
-			$state.go("rooms", { user: $scope.currentUser });
-			//$location.path("/rooms/" + $scope.currentUser);
-			alert("An operator just kicked you from the room");
-		}
-	});
-
-	socket.on("banned", function(room, bannee, banner){
-		if(bannee === $scope.currentUser){
-			$state.go("rooms", { user: $scope.currentUser });
-			//$location.path("/rooms/" + $scope.currentUser);
-			alert("An operator just banned you from the room");
-		}
-	});
-
+	// Operations for the page
 	$scope.backToRooms = function(){
 		socket.emit("partroom", $scope.currentRoom);
 		$state.go("rooms", { user: $scope.currentUser });
-		//$location.path("/rooms/" + $scope.currentUser);
 	};
 
 	$scope.kickUser = function(userToKick){
@@ -176,7 +201,9 @@ function ($scope, $state, $stateParams, socket){
 	};
 
 	$scope.isUserOrOp = function(userToCheck){
-		if($scope.currentOps[userToCheck] !== undefined || $scope.currentUser === userToCheck || $scope.currentOps[$scope.currentUser] === undefined){
+		if ($scope.currentOps[userToCheck] !== undefined ||
+			$scope.currentUser === userToCheck ||
+			$scope.currentOps[$scope.currentUser] === undefined){
 			return true;
 		}
 		return false;
@@ -185,44 +212,15 @@ function ($scope, $state, $stateParams, socket){
 	$scope.privateMessage = function(user) {
 		console.log("private message");
 		if ($scope.messageHistory[user] === undefined) {
-			$scope.tabData.push({
-				heading: user,
-				route: "room.private",
-				active: true,
-				params: {
-					other: user
-				},
-				closable: true
-			});
-			$scope.messageHistory[user] = [];
+			$scope.createPrivateTab(user, true);
 		}
 		console.log($scope.messageHistory);
 	};
-
-	socket.on("recv_privatemsg", function(nick, message){
-		if ($scope.messageHistory[nick] === undefined) {
-			$scope.tabData.push({
-				heading: nick,
-				route: "room.private",
-				active: false,
-				params: {
-					other: nick
-				},
-				closable: true
-			});
-			$scope.messageHistory[nick] = [];
-		}
-		$scope.messageHistory[nick].push({
-			timestamp: Date.now(),
-			nick: nick,
-			message: message
-		});
-	});
 }]);
 
 ChatClient.controller("RoomsController",
-["$scope", "$location", "$stateParams", "socket",
-function ($scope, $location, $stateParams, socket){
+["$scope", "$state", "$stateParams", "socket",
+function ($scope, $state, $stateParams, socket){
 	$scope.rooms = [];
 	$scope.roomlist = {};
 	$scope.roomName = "";
@@ -245,7 +243,8 @@ function ($scope, $location, $stateParams, socket){
 			socket.emit("joinroom", {room: $scope.roomName}, function(success, reason){
 				if(success){
 					console.log("success");
-					$location.path("/room/" + $scope.currentUser + "/" + $scope.roomName);
+					$state.go("room",
+						{ user: $scope.currentUser, room: $scope.roomName});
 					$scope.roomName = "";
 				} else {
 					console.log(reason);
