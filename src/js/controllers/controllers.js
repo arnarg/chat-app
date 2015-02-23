@@ -143,14 +143,14 @@ function ($scope, $state, $stateParams, socket){
 	socket.on("kicked", function(room, kickee, kicker){
 		if(kickee === $scope.currentUser){
 			$state.go("rooms", { user: $scope.currentUser });
-			alert("An operator just kicked you from the room");
+			toastr.error("Check yo self befo' yo wreck yo self!", "You've been kicked");
 		}
 	});
 
 	socket.on("banned", function(room, bannee, banner){
 		if(bannee === $scope.currentUser){
 			$state.go("rooms", { user: $scope.currentUser });
-			alert("An operator just banned you from the room");
+			toastr.error("I guess you did not check yourself.", "You've been banned");
 		}
 	});
 

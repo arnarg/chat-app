@@ -22,6 +22,7 @@ module.exports = function (grunt) {
 					console: false,
 					$:       false,
 					io:      false,
+					toastr: true,
 					ChatClient: true // global variable for the angular module
 				}
 			},
