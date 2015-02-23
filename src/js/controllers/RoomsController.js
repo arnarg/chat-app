@@ -8,7 +8,6 @@ function ($scope, $state, $stateParams, socket){
 	$scope.errorMessage = "";
 
 	socket.on("roomlist", function(data) {
-		$scope.message = data.lobby.topic;
 		$scope.rooms = Object.keys(data);
 		$scope.roomlist = data;
 	});

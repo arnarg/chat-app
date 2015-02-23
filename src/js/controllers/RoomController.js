@@ -55,8 +55,6 @@ function ($scope, $state, $stateParams, socket){
 	// Socket event handlers
 	socket.on("updatechat", function(roomName, messageHistory){
 		$scope.messageHistory.public = messageHistory;
-		console.log($scope.messageHistory);
-		//$("#chatWindow").prop({ scrollTop: $("#chatWindow").prop("scrollHeight") });
 		$("#chatWindow").animate({ scrollTop: $(document).height() }, "fast");
 	});
 
@@ -72,9 +70,10 @@ function ($scope, $state, $stateParams, socket){
 	});
 
 	socket.on("updateusers", function(roomName, users, ops){
-		// TODO: Check if the roomName equals the current room !
-		$scope.currentUsers = users;
-		$scope.currentOps = ops;
+		if (roomName === $scope.currentRoom) {
+			$scope.currentUsers = users;
+			$scope.currentOps = ops;
+		}
 	});
 
 	socket.on("kicked", function(room, kickee, kicker){
@@ -156,6 +155,5 @@ function ($scope, $state, $stateParams, socket){
 		if ($scope.messageHistory[user] === undefined) {
 			$scope.createPrivateTab(user, true);
 		}
-		console.log($scope.messageHistory);
 	};
 }]);
