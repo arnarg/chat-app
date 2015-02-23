@@ -12,6 +12,7 @@ function ($scope, $state, $stateParams, socket){
 		public: []
 	};
 	$scope.roomTopic = "";
+	$scope.kick = false;
 	var joinmsg = "";
 	var partmsg = "";
 
@@ -77,14 +78,19 @@ function ($scope, $state, $stateParams, socket){
 	});
 
 	socket.on("kicked", function(room, kickee, kicker){
-		if(kickee === $scope.currentUser){
+		// $scope.kick is to prevent the code below from running multiple
+		// times as the server sends more than one "kicked" event sometimes
+		if(kickee === $scope.currentUser && !$scope.kick){
+			$scope.kick = true;
 			$state.go("rooms", { user: $scope.currentUser });
 			toastr.error("Check yo self befo' yo wreck yo self!", "You've been kicked");
 		}
 	});
 
 	socket.on("banned", function(room, bannee, banner){
-		if(bannee === $scope.currentUser){
+		// same as with "kicked" event
+		if(bannee === $scope.currentUser && !$scope.kick){
+			$scope.kick = true;
 			$state.go("rooms", { user: $scope.currentUser });
 			toastr.error("I guess you did not check yourself.", "You've been banned");
 		}
