@@ -12,13 +12,3 @@
 <input type = "text" class="form-control" id="roomName" name="roomName" data-ng-model="roomName" data-ng-keyup="$event.keyCode == 13 && createRoom()" />
 <button type="button" class="btn btn-primary" data-ng-click="createRoom()" >Create new room</button>
 </div>
-
-
-<div class="col-md-3">
-	<h3>Online users</h3>
-	<div class="well">
-		<ul ng-repeat="user in userlist">
-			<li><a ng-href="#/room/{{user}}/{{currentUser}}">{{user}}</a></li>
-		</ul>
-	</div>
-</div>
