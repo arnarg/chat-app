@@ -33,5 +33,9 @@ function ($stateProvider, $urlRouterProvider){
 			url: "/private/:other",
 			templateUrl: "views/room.private.html",
 			controller: "RoomPrivateController"
+		})
+		.state("logout", {
+			url: "/logout",
+			controller: "LogoutController"
 		});
 }]);

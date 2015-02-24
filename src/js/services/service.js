@@ -22,7 +22,7 @@ ChatClient.factory('socket', ["$rootScope", function ($rootScope) {
 				});
 			});
 		},
-		getSocket: function() {
+		theSocket: function() {
 			return socket;
 		}
 	};

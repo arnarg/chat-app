@@ -1,6 +1,6 @@
 ChatClient.controller("LoginController",
-["$scope", "$state", "socket",
-function ($scope, $state, socket){
+["$scope", "$rootScope", "$state", "socket",
+function ($scope, $rootScope, $state, socket){
 	$scope.errorMessage = "";
 	$scope.nickname = "";
 	$scope.message = "Hello from Login";
@@ -11,6 +11,7 @@ function ($scope, $state, socket){
 		} else {
 			socket.emit("adduser", $scope.nickname, function(available){
 				if(available){
+					$rootScope.loggedIn = true;
 					$state.go("rooms", { user: $scope.nickname });
 				} else{
 					$scope.errorMessage = "This nickname is already taken";
