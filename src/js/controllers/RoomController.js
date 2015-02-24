@@ -80,19 +80,14 @@ function ($scope, $state, $stateParams, socket){
 	});
 
 	socket.on("kicked", function(room, kickee, kicker){
-		// $scope.kick is to prevent the code below from running multiple
-		// times as the server sends more than one "kicked" event sometimes
-		if(kickee === $scope.currentUser && !$scope.kick){
-			$scope.kick = true;
+		if(kickee === $scope.currentUser){
 			$state.go("rooms", { user: $scope.currentUser });
 			toastr.error("Check yo self befo' yo wreck yo self!", "You've been kicked");
 		}
 	});
 
 	socket.on("banned", function(room, bannee, banner){
-		// same as with "kicked" event
-		if(bannee === $scope.currentUser && !$scope.kick){
-			$scope.kick = true;
+		if(bannee === $scope.currentUser){
 			$state.go("rooms", { user: $scope.currentUser });
 			toastr.error("I guess you did not check yourself.", "You have been banned");
 		}
