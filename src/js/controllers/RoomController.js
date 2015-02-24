@@ -86,7 +86,7 @@ function ($scope, $state, $stateParams, socket){
 	socket.on("banned", function(room, bannee, banner){
 		if(bannee === $scope.currentUser){
 			$state.go("rooms", { user: $scope.currentUser });
-			toastr.error("I guess you did not check yourself.", "You've been banned");
+			toastr.error("I guess you did not check yourself.", "You have been banned");
 		}
 	});
 
@@ -145,11 +145,15 @@ function ($scope, $state, $stateParams, socket){
 		return false;
 	};
 
-	$scope.privateMessage = function(user) {
+	$scope.privateMessage = function(user){
 		console.log("private message");
 		if ($scope.messageHistory[user] === undefined) {
 			$scope.createPrivateTab(user, true);
 		}
 		console.log($scope.messageHistory);
 	};
+
+	$scope.$on('$destroy', function() {
+		socket.getSocket().removeAllListeners();
+	});
 }]);
