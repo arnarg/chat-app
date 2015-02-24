@@ -119,12 +119,6 @@ function ($scope, $state, $stateParams, socket){
 		$state.go("rooms", { user: $scope.currentUser });
 	};
 
-	$scope.disconnect = function(){
-		socket.emit("disconnect");
-		console.log("disconnected");
-		$state.go("login");
-	};
-
 	$scope.kickUser = function(userToKick){
 		socket.emit("kick", {user: userToKick, room: $scope.currentRoom}, function(success){
 			if(success){
