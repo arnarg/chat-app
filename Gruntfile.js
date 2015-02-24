@@ -13,7 +13,6 @@ module.exports = function (grunt) {
 				node:   true,
 				undef:  true,
 				browser: true,	// to allow document
-				devel: true, 	// to allow alert
 				globals: {
 					_:       false,
 					jQuery:  false,

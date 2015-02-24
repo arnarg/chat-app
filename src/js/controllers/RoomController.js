@@ -12,6 +12,7 @@ function ($scope, $state, $stateParams, socket){
 		public: []
 	};
 	$scope.roomTopic = "";
+	$scope.kick = false;
 	var joinmsg = "";
 	var partmsg = "";
 
@@ -54,8 +55,6 @@ function ($scope, $state, $stateParams, socket){
 	// Socket event handlers
 	socket.on("updatechat", function(roomName, messageHistory){
 		$scope.messageHistory.public = messageHistory;
-		console.log($scope.messageHistory);
-		//$("#chatWindow").prop({ scrollTop: $("#chatWindow").prop("scrollHeight") });
 		$("#chatWindow").animate({ scrollTop: $(document).height() }, "fast");
 	});
 
@@ -71,20 +70,26 @@ function ($scope, $state, $stateParams, socket){
 	});
 
 	socket.on("updateusers", function(roomName, users, ops){
-		// TODO: Check if the roomName equals the current room !
-		$scope.currentUsers = users;
-		$scope.currentOps = ops;
+		if (roomName === $scope.currentRoom) {
+			$scope.currentUsers = users;
+			$scope.currentOps = ops;
+		}
 	});
 
 	socket.on("kicked", function(room, kickee, kicker){
-		if(kickee === $scope.currentUser){
+		// $scope.kick is to prevent the code below from running multiple
+		// times as the server sends more than one "kicked" event sometimes
+		if(kickee === $scope.currentUser && !$scope.kick){
+			$scope.kick = true;
 			$state.go("rooms", { user: $scope.currentUser });
 			toastr.error("Check yo self befo' yo wreck yo self!", "You've been kicked");
 		}
 	});
 
 	socket.on("banned", function(room, bannee, banner){
-		if(bannee === $scope.currentUser){
+		// same as with "kicked" event
+		if(bannee === $scope.currentUser && !$scope.kick){
+			$scope.kick = true;
 			$state.go("rooms", { user: $scope.currentUser });
 			toastr.error("I guess you did not check yourself.", "You have been banned");
 		}
@@ -150,7 +155,6 @@ function ($scope, $state, $stateParams, socket){
 		if ($scope.messageHistory[user] === undefined) {
 			$scope.createPrivateTab(user, true);
 		}
-		console.log($scope.messageHistory);
 	};
 
 	$scope.$on('$destroy', function() {
