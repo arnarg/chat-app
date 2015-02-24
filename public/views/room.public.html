@@ -1,3 +1,4 @@
+<button type="button" class="btn btn-primary" data-ng-click="logout()">Log out</button>
 <div class="well">
     <ul id="chatWindow">
         <li ng-repeat="message in messageHistory.public">[{{message.timestamp | date:'H:mm'}}] {{message.nick}}: {{message.message}} </li>

@@ -155,6 +155,12 @@ function ($scope, $state, $stateParams, socket){
 		}
 	};
 
+	$scope.logout = function(){
+		console.log("logout");
+		socket.emit("logout");
+		$state.go("login");
+	};
+
 	$scope.$on('$destroy', function() {
 		socket.getSocket().removeAllListeners();
 	});
