@@ -67,6 +67,9 @@ function ($scope, $state, $stateParams, socket){
 				}
 			}
 		}
+		else if(status === "quit"){
+			console.log("quit");
+		}
 	});
 
 	socket.on("updateusers", function(roomName, users, ops){
@@ -119,6 +122,12 @@ function ($scope, $state, $stateParams, socket){
 	$scope.backToRooms = function(){
 		socket.emit("partroom", $scope.currentRoom);
 		$state.go("rooms", { user: $scope.currentUser });
+	};
+
+	$scope.disconnect = function(){
+		socket.emit("disconnect");
+		console.log("disconnected");
+		$state.go("login");
 	};
 
 	$scope.kickUser = function(userToKick){
