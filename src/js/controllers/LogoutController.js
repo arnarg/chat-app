@@ -1,6 +1,6 @@
 ChatClient.controller("LogoutController",
-["$scope", "$rootScope", "$state", "socket",
-function ($scope, $rootScope, $state, socket){
+["$rootScope", "$state", "socket",
+function ($rootScope, $state, socket){
 	socket.emit("logout");
 	$rootScope.loggedIn = false;
 	$state.go("login");
