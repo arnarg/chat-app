@@ -75,8 +75,8 @@ function ($scope, $state, $rootScope, $stateParams, socket){
 
 		socket.on("updateusers", function(roomName, users, ops){
 			if (roomName === $scope.currentRoom) {
-				$scope.currentUsers = users;
-				$scope.currentOps = ops;
+				$scope.currentUsers = Object.keys(users);
+				$scope.currentOps = Object.keys(ops);
 			}
 		});
 
